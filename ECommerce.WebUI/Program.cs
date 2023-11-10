@@ -1,3 +1,7 @@
+using ECommerce.Business.Abstract;
+using ECommerce.Business.Concrete;
+using ECommerce.DataAccess.Abstract;
+using ECommerce.DataAccess.Concrete.EFEntityFramework;
 using ECommerce.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,7 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<ICategoryDal, EFCategoryDal>();
+builder.Services.AddScoped<IProductDal, EFProductDal>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var conn = builder.Configuration.GetConnectionString("myconn");
 builder.Services.AddDbContext<NorthwindContext>(options =>
@@ -33,6 +40,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Product}/{action=Index}/{id?}");
 
 app.Run();
