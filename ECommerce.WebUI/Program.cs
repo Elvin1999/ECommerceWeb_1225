@@ -13,6 +13,7 @@ builder.Services.AddScoped<ICategoryDal, EFCategoryDal>();
 builder.Services.AddScoped<IProductDal, EFProductDal>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddSession();
 
 var conn = builder.Configuration.GetConnectionString("myconn");
 builder.Services.AddDbContext<NorthwindContext>(options =>
@@ -37,6 +38,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
