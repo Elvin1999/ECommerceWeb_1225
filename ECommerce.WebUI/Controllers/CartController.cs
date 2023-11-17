@@ -1,4 +1,5 @@
 ﻿using ECommerce.Business.Abstract;
+using ECommerce.Entities.Concrete;
 using ECommerce.WebUI.Models;
 using ECommerce.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,27 @@ namespace ECommerce.WebUI.Controllers
             _cartSessionService.SetCart(cart);
             TempData.Add("message", "Your Product was removed successfully from cart");
             return RedirectToAction("List");
+        }
+
+        public IActionResult Complete()
+        {
+            var shippingDetailViewModel = new ShippingDetailViewModel
+            {
+                ShippingDetails = new ShippingDetails()
+            };
+
+            return View(shippingDetailViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Complete(ShippingDetailViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            TempData.Add("message", String.Format("Thank you {0} , you order is in progress", model.ShippingDetails.Firstname));
+            return View();
         }
     }
 }
