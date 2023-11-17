@@ -18,7 +18,7 @@ namespace ECommerce.WebUI.Controllers
             _cartService = cartService;
         }
 
-        public async Task<IActionResult> AddToCart(int productId,int page,int category)
+        public async Task<IActionResult> AddToCart(int productId, int page, int category)
         {
             var productToBeAdded = await _productService.GetById(productId);
             var cart = _cartSessionService.GetCart();
@@ -28,7 +28,7 @@ namespace ECommerce.WebUI.Controllers
 
             TempData.Add("message", String.Format("Your product, {0} was added successfully to cart", productToBeAdded.ProductName));
 
-            return RedirectToAction("Index", "Product",new {page=page,category=category});
+            return RedirectToAction("Index", "Product", new { page = page, category = category });
         }
 
         public IActionResult List()
@@ -36,14 +36,44 @@ namespace ECommerce.WebUI.Controllers
             var cart = _cartSessionService.GetCart();
             var model = new CartListViewModel
             {
-                Cart=cart
+                Cart = cart
             };
             return View(model);
         }
 
+        public IActionResult Increase(int productId)
+        {
+            var cart = _cartSessionService.GetCart();
+            var cartLine = cart.CartLines.FirstOrDefault(c => c.Product.ProductId == productId);
+            if (cartLine.Quantity < cartLine.Product.UnitsInStock)
+            {
+                cartLine.Quantity++;
+                _cartSessionService.SetCart(cart);
+
+                TempData.Add("message", "One item added");
+            }
+
+
+            return RedirectToAction("List");
+        }
+        public IActionResult Decrease(int productId)
+        {
+            var cart = _cartSessionService.GetCart();
+            var cartLine = cart.CartLines.FirstOrDefault(c => c.Product.ProductId == productId);
+            if (cartLine.Quantity > 1)
+            {
+                cartLine.Quantity--;
+                _cartSessionService.SetCart(cart);
+
+                TempData.Add("message", "One item removed");
+            }
+
+            return RedirectToAction("List");
+        }
+
         public IActionResult Remove(int productId)
         {
-            var cart=_cartSessionService.GetCart();
+            var cart = _cartSessionService.GetCart();
 
             _cartService.RemoveFromCart(cart, productId);
             _cartSessionService.SetCart(cart);
