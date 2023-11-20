@@ -1,11 +1,13 @@
 ﻿using ECommerce.Business.Abstract;
 using ECommerce.Entities.Models;
 using ECommerce.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.WebUI.Controllers
 {
+   
     public class ProductController : Controller
     {
         private IProductService _productService;
